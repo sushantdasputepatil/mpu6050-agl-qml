@@ -1,0 +1,58 @@
+The file config.xml describes important data of the application to the framework:
+1.the unique identifier of the application
+2.the name of the application
+3.the type of the application
+4.the icon of the application
+5.the permissions linked to the application
+6.the services and dependencies of the application
+
+The file MUST be at the root of the widget and MUST be case sensitively name config.xml.
+The file config.xml is a XML file described by the document widgets.
+Here is the example of the config file for the QML application mpu-temp:
+______________________________________________________________________________________________
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" id="mpu-temp" version="0.1">
+  <name>Mpu-Temp</name>
+  <icon src="icon.svg"/>
+  <content src="bin/mpu-temp" type="application/vnd.agl.native"/>
+  <description>Demo application for displaying temperature data from mpu6050</description>
+  <author>iotiot.in &lt;sushantdaspute84@gmail.com&gt;</author>
+  <license>APL 2.0</license>
+  <feature name="urn:AGL:widget:required-api">
+    <param name="lib/libmpu-temp-binding.so" value="local" />
+  </feature>
+  <feature name="urn:AGL:widget:required-permission">
+    <param name="urn:AGL:permission::public:no-htdocs" value="required" />
+  </feature>
+</widget>
+______________________________________________________________________________________________
+The most important items are:
+1.<widget id=”……”>: gives the id of the widget. It must be unique.
+2.<widget version=”……”>: gives the version of the widget
+3.<icon src=”…”>: gives a path to the icon of the application (can be repeated with different sizes)
+4.<content src=”…” type=”…”>: this indicates the entry point and its type.
+
+The AGL framework uses the feature tag for specifying security and binding requirement of the widget.
+Since the migration of the framework to leverage systemd power, the features are of important use to:
+a.declare more than just an application
+b.declare the expected dependencies
+c.declare the expected permissions
+d.declare the exported apis
+
+required-api: feature name=”urn:AGL:widget:required-api”
+List of the api required by the widget.
+Each required api must be explicit using a <param> entry.
+
+required-binding: feature name=”urn:AGL:widget:required-binding”
+List of the bindings required by the widget.
+
+Since AGL 6 (FF - Funky Flounder), the binder implements bindings version 3 that allow the declaration of 0, 1 or more APIs by one binding. In other words, the equivalency one binding = one API is lost. At the same time the framework added the ability to use bindings exported by other widgets.
+Each required binding must be explicit using a <param> entry.
+
+provided-binding: feature name=”urn:AGL:widget:provided-binding”
+This feature allows to export a binding to other binders. The bindings whose relative name is given as value is exported to other binders under the given name.
+Each provided binding must be explicit using a <param> entry.
+
+required-permission: feature name=”urn:AGL:widget:required-permission”
+List of the permissions required by the unit.
+Each required permission must be explicit using a <param> entry.

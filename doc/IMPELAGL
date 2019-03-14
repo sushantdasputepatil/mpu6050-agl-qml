@@ -1,0 +1,32 @@
+READ TEMPERATURE DATA IN AGL USING I2C:
+1.You must define the version of binding that you are using. This is done line 1 where we define that this is the version 1 using
+#define AFB_BINDING_VERSION 1
+
+2.In agl binding define connected sensor address using #define ADDR 0x40 , here 0x40 is i2c address of tmp007 sensor.
+
+3.Now create i2c bus using char *i2c_bus = "/dev/i2c-0";
+
+4.Basic functions required in any binding:
+a.afbBindingV1Register is a Activation function for registering the binding called by afb deamon
+b.binding_desc descibes the binding. It declares the version binding, its name,a short description and its method list.
+c.afb_verb_desc_v1 Gives description of one of the method of the API provided by the binding,this enumeration is valid for bindings of type 1.
+d.afbBindingV1ServiceInit makes initialisation of bindings and make its afb-deamon's interface fully functional
+
+5.static int temp_init(void) function used for intialization of temperature sensor: 
+a.Create array 0f 3 values for config registers using char config[3] = {0}; which is a declaration of configuration register.
+b.After this open system call from if ((fd = open(i2c_bus, O_RDWR)) < 0) returns a new file descriptor (a non-negative integer) which can then be used to configure the bus.
+c.Now you must initiate communication with whatever peripheral you are attempting to utilize using if (ioctl(fd, I2C_SLAVE, ADDR) < 0)
+d.final step in initialization is to Select configuration register(0x02) & Set Continuous conversion, comparator mode(0x15, 0x40) by writing the above values which are 0x02 0x15 0x40.i.e.write(fd, config, 3);
+
+6.When binding goes into get_temp function via afb_verb_desc_v1 which is api function following process gets done.
+i.e.reading temp data from get_temp function:
+a.Read 2 bytes of data from register(0x03)
+b.char data[2] = {0} contains temp msb, temp lsb.
+c.set temp register address.
+d.first read raw temp data and then convert the data to 14-bits
+e.convert to celsius
+f.convert temp data to readable format and return it 
+g.Now sends the reply,attaching it to the object description using afb_req_success.
+
+
+
