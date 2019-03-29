@@ -1,4 +1,0 @@
-Every application inside agl runs as a systemd service
-when you install and run or start the application on cammand line hit the command journalctl -f to see live what is happening
-there you something xyz@service now using systemctl status xyz@service you can directly se what is happening in that service
-modprobe loads the kernel modules as specified.
