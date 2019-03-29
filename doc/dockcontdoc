@@ -1,9 +1,0 @@
-dockercontainer
-	docker container ls -a --filter status=exited --filter status=created
-	docker container prune
-inside docker worker generator
-export IMAGE_ID=ebb7b8111953 
-./contrib/create_container 0 $IMAGE_ID;
-ssh
-install_sdk ~/share/poky-agl<tab>
-source /xdt/sdk/environment-setup-<your_target>
